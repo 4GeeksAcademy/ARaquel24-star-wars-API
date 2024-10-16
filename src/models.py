@@ -15,7 +15,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            # do not serialize the password, its a security breach
+            
         }
     
 
@@ -38,7 +38,7 @@ class Personajes(db.Model):
             "hair_color": self.hair_color,
             "eye_color": self.eye_color,
             "birth_year": self.birth_year,
-            # do not serialize the password, its a security breach
+            
         }
     
 
@@ -61,7 +61,7 @@ class Planetas(db.Model):
             "diameter": self.diameter,
             "gravity": self.gravity,
             "population": self.population,
-            # do not serialize the password, its a security breach
+            
         }
     
 class Favoritos(db.Model):

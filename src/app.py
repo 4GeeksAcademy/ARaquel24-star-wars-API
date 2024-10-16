@@ -69,11 +69,17 @@ def get_planetas():
 
     return jsonify(results), 200
 
-@app.route('/favoritos/<int:favorito_id>', methods=['GET'])
-def get_favorito(favorito_id):
-    favorito = Favoritos.query.filter_by(id=favorito_id).first()
+@app.route('/favoritos/<int:user_id>', methods=['GET'])
+def get_favoritos_por_usuario(user_id):
+    favoritos = Favoritos.query.filter_by(usuario_id=user_id).all()
+    
+    if not favoritos:
+        return jsonify({"error": "No se encontraron favoritos para este usuario"}), 404
+    
+    results = list(map(lambda favorito: favorito.serialize(), favoritos))
+    
+    return jsonify(results), 200
 
-    return jsonify(favorito.serialize()), 200
 
 @app.route('/favoritos', methods=['GET'])
 def get_favoritos():
@@ -85,7 +91,16 @@ def get_favoritos():
 @app.route('/favoritos', methods=['POST'])
 def add_favoritos():
     body = request.get_json()
-    favorito = Favoritos(usuario= body['Usuario'], Personajes = body['Personajes'], Planetas = body['Planetas'])
+
+    usuario = User.query.get(body['usuario'])
+    personaje = Personajes.query.get(body['personajes'])
+    planeta = Planetas.query.get(body['planetas'])
+
+    favorito = Favoritos(
+        usuario=usuario, 
+        personajes=personaje,  
+        planetas=planeta  
+    )
     db.session.add(favorito)
     db.session.commit()
     response_body = {
